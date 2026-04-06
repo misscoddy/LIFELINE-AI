@@ -151,7 +151,7 @@ docker run evacuation-ai
 ##Demo screenshot
 ![image alt](https://github.com/misscoddy/LIFELINE-AI/blob/6dfd48db1ce90288427ee687d5baeb7a7a8c9869/start.png)
 ![image alt](https://github.com/misscoddy/LIFELINE-AI/blob/680310f03f96177ba10faec1a684e6edcef142b3/structure.png)
-![image alt](
+![image alt](https://github.com/misscoddy/LIFELINE-AI/blob/3c0deb8815692b2420a6d00f730b65a383a4a35d/taskcomplete.png)
 
 ✨ Future Improvements
 

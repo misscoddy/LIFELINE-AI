@@ -1,4 +1,3 @@
-# inference.py
 import os
 import json
 import random
@@ -28,7 +27,7 @@ def log_end(result_description: str):
     print(f"(END) {result_description}")
 
 # -------------------------------
-# Dummy inference functions
+# Dummy inference function
 # -------------------------------
 def simulate_evacuation(prompt: str, task_id: str = "Evacuation Simulation"):
     log_start(task_id)
@@ -50,17 +49,14 @@ app = FastAPI()
 
 @app.post("/reset")
 def openenv_reset():
-    # Respond OK to OpenEnv POST /reset
     return JSONResponse({"status": "ok"})
 
 @app.get("/validate")
 def openenv_validate():
-    # Respond OK to OpenEnv validate
     return JSONResponse({"status": "ok"})
 
 @app.post("/inference")
 def openenv_inference(payload: dict):
-    # Use dummy inference function
     prompt = payload.get("prompt", "Default prompt")
     result = simulate_evacuation(prompt)
     return JSONResponse(result)

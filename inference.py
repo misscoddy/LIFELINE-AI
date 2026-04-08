@@ -4,12 +4,10 @@ import time
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
-# Logging helpers
 def log_start(task_id): print(f"(START) {task_id}")
 def log_step(step): print(f"(STEP) {step}")
 def log_end(result): print(f"(END) {result}")
 
-# Dummy evacuation simulation
 def simulate_evacuation(prompt):
     log_start("Evacuation Simulation")
     log_step("Analyzing prompt"); time.sleep(0.1)
@@ -35,3 +33,9 @@ def validate():
 def inference(payload: dict):
     prompt = payload.get("prompt", "Default prompt")
     return JSONResponse(simulate_evacuation(prompt))
+
+# --- For OpenEnv Phase 1 ---
+if __name__ == "__main__":
+    print("Running OpenEnv Phase 1 test")
+    result = simulate_evacuation("Test prompt")
+    print(result)

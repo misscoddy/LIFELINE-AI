@@ -14,7 +14,7 @@ def reset(level: str = "easy"):
     obs = env.reset()
     return JSONResponse({"state": obs.dict()})
 
-# --- Step ---
+# --- Step endpoint ---
 @app.post("/step")
 def step(action: dict):
     global env
@@ -34,7 +34,8 @@ def step(action: dict):
 def validate():
     return JSONResponse({"status": "ok"})
 
-# --- Local test ---
+# --- Local Phase 1 test ---
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    env = EvacuationEnv("easy")
+    obs = env.reset()
+    print("Phase 1 local test OK")

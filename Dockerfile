@@ -3,7 +3,7 @@ FROM python:3.9-slim
 WORKDIR /app
 COPY . /app
 
-# Install all dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run FastAPI server continuously on port 80

@@ -1,14 +1,11 @@
-# Dockerfile at repo root
+# Dockerfile
 FROM python:3.9-slim
 
-# Set working directory
 WORKDIR /app
-
-# Copy all files
 COPY . /app
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt uvicorn fastapi
 
-# Default command to run inference.py
+# Run FastAPI server
 CMD ["python", "inference.py"]

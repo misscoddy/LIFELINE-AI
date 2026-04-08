@@ -5,5 +5,5 @@ COPY . /app
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run server on port 80 (Phase 1 expects this)
+# Run FastAPI server continuously
 CMD ["uvicorn", "inference:app", "--host", "0.0.0.0", "--port", "80"]

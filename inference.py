@@ -1,51 +1,40 @@
-import json
-import random
-import time
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from environment import EvacuationEnv
+from models import Action
 
-# --- Logging helpers ---
-def log_start(task_id):
-    print(f"(START) {task_id}")
-
-def log_step(step):
-    print(f"(STEP) {step}")
-
-def log_end(result):
-    print(f"(END) {result}")
-
-# --- Dummy evacuation simulation ---
-def simulate_evacuation(prompt):
-    log_start("Evacuation Simulation")
-    log_step("Analyzing prompt")
-    time.sleep(0.1)
-    log_step("Planning routes")
-    time.sleep(0.1)
-    log_step("Simulating people movement")
-    people_moved = random.randint(8, 10)
-    log_step(f"{people_moved} people reached exits safely")
-    result = {"prompt": prompt, "people_evacuated": people_moved, "status": "done"}
-    log_end(json.dumps(result))
-    return result
-
-# --- FastAPI app ---
 app = FastAPI()
+env = None  # Global environment
 
+# --- Reset environment ---
 @app.post("/reset")
-def reset():
-    return JSONResponse({"status": "ok"})
+def reset(level: str = "easy"):
+    global env
+    env = EvacuationEnv(level)
+    obs = env.reset()
+    return JSONResponse({"state": obs.dict()})
 
+# --- Step ---
+@app.post("/step")
+def step(action: dict):
+    global env
+    if env is None:
+        return JSONResponse({"error": "Environment not initialized"}, status_code=400)
+
+    act = Action(**action)
+    obs, reward, done, _ = env.step(act)
+    return JSONResponse({
+        "state": obs.dict(),
+        "reward": reward.value,
+        "done": done
+    })
+
+# --- Validate endpoint ---
 @app.get("/validate")
 def validate():
     return JSONResponse({"status": "ok"})
 
-@app.post("/inference")
-def inference(payload: dict):
-    prompt = payload.get("prompt", "Default prompt")
-    return JSONResponse(simulate_evacuation(prompt))
-
-# --- Phase 1 quick test mode ---
+# --- Local test ---
 if __name__ == "__main__":
-    print("Running OpenEnv Phase 1 test")
-    result = simulate_evacuation("Test prompt")
-    print(result)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

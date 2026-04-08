@@ -3,14 +3,17 @@ import os
 import json
 import random
 import time
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+import uvicorn
 
 # -------------------------------
-# Environment Variables (optional)
+# Environment Variables
 # -------------------------------
 API_BASE_URL     = os.getenv("API_BASE_URL", "http://localhost:8000")
 MODEL_NAME       = os.getenv("MODEL_NAME", "evacuation_model")
-HF_TOKEN         = os.getenv("HF_TOKEN")           # optional, not used here
-LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")  # optional, not used here
+HF_TOKEN         = os.getenv("HF_TOKEN")           # optional
+LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")  # optional
 
 # -------------------------------
 # Logging helpers
@@ -28,67 +31,42 @@ def log_end(result_description: str):
 # Dummy inference functions
 # -------------------------------
 def simulate_evacuation(prompt: str, task_id: str = "Evacuation Simulation"):
-    """Simulates evacuation steps with structured logging."""
     log_start(task_id)
-    
     log_step("Analyzing the prompt")
-    time.sleep(0.5)  # simulate processing
-    
+    time.sleep(0.5)
     log_step("Planning evacuation routes")
     time.sleep(0.5)
-    
     log_step("Simulating people movement")
     people_moved = random.randint(8, 10)
     log_step(f"{people_moved} people reached exits safely")
-    
-    output = {
-        "prompt": prompt,
-        "people_evacuated": people_moved,
-        "status": "Simulation complete"
-    }
+    output = {"prompt": prompt, "people_evacuated": people_moved, "status": "Simulation complete"}
     log_end(json.dumps(output))
     return output
 
-def generate_dummy_response(prompt: str, task_id: str = "Dummy Response"):
-    """Dummy LLM-style response without OpenAI."""
-    log_start(task_id)
-    log_step("Processing prompt internally")
-    time.sleep(0.3)
-    
-    choices = ["Option A", "Option B", "Option C"]
-    selected = random.choice(choices)
-    log_step(f"Selected {selected} as response")
-    
-    result = {
-        "prompt": prompt,
-        "response": selected
-    }
-    log_end(json.dumps(result))
-    return result
+# -------------------------------
+# FastAPI server for OpenEnv
+# -------------------------------
+app = FastAPI()
 
-def multi_step_simulation(prompt: str, task_id: str = "Multi-step Simulation"):
-    """Runs several dummy steps for complex simulation."""
-    log_start(task_id)
-    steps = ["Initialize environment", "Spawn agents", "Move agents", "Check collisions", "Finalize results"]
-    
-    results = {}
-    for step in steps:
-        log_step(step)
-        time.sleep(0.3)
-        results[step] = f"{random.randint(1,10)} agents processed"
-    
-    log_end(json.dumps(results))
-    return results
+@app.post("/reset")
+def openenv_reset():
+    # Respond OK to OpenEnv POST /reset
+    return JSONResponse({"status": "ok"})
+
+@app.get("/validate")
+def openenv_validate():
+    # Respond OK to OpenEnv validate
+    return JSONResponse({"status": "ok"})
+
+@app.post("/inference")
+def openenv_inference(payload: dict):
+    # Use dummy inference function
+    prompt = payload.get("prompt", "Default prompt")
+    result = simulate_evacuation(prompt)
+    return JSONResponse(result)
 
 # -------------------------------
-# Example usage
+# Run server if executed directly
 # -------------------------------
 if __name__ == "__main__":
-    prompt1 = "Simulate an evacuation scenario with 10 people and 2 exits."
-    simulate_evacuation(prompt1)
-    
-    prompt2 = "Choose best exit strategy"
-    generate_dummy_response(prompt2)
-    
-    prompt3 = "Run full multi-step agent simulation"
-    multi_step_simulation(prompt3)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

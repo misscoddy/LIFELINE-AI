@@ -1,17 +1,15 @@
-# Use Python 3.9 slim image
+# Use Python 3.9 slim
 FROM python:3.9-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy project files
+# Copy all files
 COPY . /app
 
-# Upgrade pip
+# Upgrade pip and install dependencies
 RUN python -m pip install --upgrade pip
-
-# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Phase 1 compatible: run quick test so OpenEnv can validate
-CMD ["python", "inference.py"]
+# Run FastAPI app via uvicorn (Phase 1 compatible)
+CMD ["uvicorn", "inference:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -153,6 +153,15 @@ docker run evacuation-ai
 ![image alt](https://github.com/misscoddy/LIFELINE-AI/blob/680310f03f96177ba10faec1a684e6edcef142b3/structure.png)
 ![image alt](https://github.com/misscoddy/LIFELINE-AI/blob/3c0deb8815692b2420a6d00f730b65a383a4a35d/taskcomplete.png)
 
+
+---
+## 🌐 Live Demo
+https://huggingface.co/spaces/misscoddy/evacuation-ai
+
+## ⚠️ Note
+The Hugging Face demo uses a simplified version for stable deployment.  
+The full implementation is available in this repository.
+
 ✨ Future Improvements
 
 - Smarter AI (RL-based agent)
